@@ -17,12 +17,14 @@ const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:5173")
   .filter(Boolean);
 
 app.disable("x-powered-by");
+app.set("trust proxy", 1);
 app.use(helmet());
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Origin is not allowed by CORS."));
-  }
+app.use(cors((req, callback) => {
+  const origin = req.get("origin");
+  // Same-origin requests (frontend and API served from one domain) are always allowed.
+  const sameOrigin = origin && new URL(origin).host === req.get("host");
+  if (!origin || sameOrigin || allowedOrigins.includes(origin)) return callback(null, { origin: true });
+  return callback(new Error("Origin is not allowed by CORS."));
 }));
 app.use(express.json({ limit: "32kb" }));
 app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, limit: 100 }), authRoutes);

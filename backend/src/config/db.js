@@ -10,7 +10,9 @@ export async function connectToDatabase(uri) {
   }
 
   mongoose.set("strictQuery", true);
-  await mongoose.connect(uri);
+  // Fail fast (instead of hanging the request) when the cluster is unreachable,
+  // e.g. when the MongoDB Atlas IP Access List does not allow the server.
+  await mongoose.connect(uri, { serverSelectionTimeoutMS: 8000 });
   await Promise.all([
     User.init(),
     Expense.init(),
@@ -18,4 +20,21 @@ export async function connectToDatabase(uri) {
     Category.init()
   ]);
   console.info(`Connected to MongoDB database "${mongoose.connection.name}".`);
+}
+
+const defaultCategories = [
+  ["Food", "#e69f6a"],
+  ["Transport", "#6d9dc5"],
+  ["Housing", "#8e7cc3"],
+  ["Utilities", "#d8b65c"],
+  ["Shopping", "#d87991"],
+  ["Entertainment", "#8caa74"],
+  ["Healthcare", "#65a89b"]
+];
+
+export async function ensureDefaultCategories() {
+  await Promise.all(defaultCategories.map(([name, color]) => {
+    const slug = name.toLowerCase();
+    return Category.updateOne({ slug }, { $setOnInsert: { name, slug, color } }, { upsert: true });
+  }));
 }

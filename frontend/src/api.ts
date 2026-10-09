@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "/api";
 
 export type User = { id: string; name: string; email: string; role: "user" | "admin" };
 export type Category = { _id: string; name: string; slug: string; color: string };

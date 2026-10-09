@@ -1,0 +1,13 @@
+[build]
+  command = "npm --prefix frontend ci && npm --prefix frontend run build"
+  publish = "frontend/dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Single-page app fallback so client-side routes still load index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
