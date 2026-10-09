@@ -1,14 +1,9 @@
 {
-  "name": "retain-api",
+  "name": "retain-app",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "test": "node --test",
-    "seed:admin": "node src/scripts/seedAdmin.js"
-  },
+  "description": "Dependencies for the Retain API Netlify Function (netlify/functions/api.mjs).",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
