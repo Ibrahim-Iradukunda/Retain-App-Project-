@@ -1,0 +1,10 @@
+[build]
+  base = "frontend"
+  command = "npm install && npm run build"
+  publish = "dist"
+
+# Serve the single-page app for any unknown path
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
